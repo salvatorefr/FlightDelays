@@ -151,11 +151,13 @@ public class Flight {
 			return false;
 		return true;
 	}
-
+public String stampaOrari() {
+	return "partenza schedulata"+this.scheduledDepartureDate+" arrivo previsto "+this.arrivalDate;
+}
 	@Override
 	public String toString() {
 		return "Flight [id=" + id + ", flightNumber=" + flightNumber + ", originAirportId=" + originAirportId
-				+ ", destinationAirportId=" + destinationAirportId + "]";
+				+ ", destinationAirportId=" + destinationAirportId + "]\n";
 	}
 
 }

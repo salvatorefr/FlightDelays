@@ -7,8 +7,10 @@
 package it.polito.tdp.flightdelays;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
+import it.polito.tdp.extflightdelays.model.Airport;
 import it.polito.tdp.extflightdelays.model.Model;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -41,21 +43,41 @@ public class FlightDelaysController {
     private Button btnAnalizza; // Value injected by FXMLLoader
 
     @FXML // fx:id="cmbBoxAeroportoPartenza"
-    private ComboBox<String> cmbBoxAeroportoPartenza; // Value injected by FXMLLoader
+    private ComboBox<Airport> cmbBoxAeroportoPartenza; // Value injected by FXMLLoader
 
     @FXML // fx:id="cmbBoxAeroportoArrivo"
-    private ComboBox<String> cmbBoxAeroportoArrivo; // Value injected by FXMLLoader
+    private ComboBox<Airport> cmbBoxAeroportoArrivo; // Value injected by FXMLLoader
 
     @FXML // fx:id="btnAeroportiConnessi"
     private Button btnAeroportiConnessi; // Value injected by FXMLLoader
 
     @FXML
     void doAnalizzaAeroporti(ActionEvent event) {
-
-    }
+    	this.txtResult.clear();
+    
+   try {
+	   double distanza = Double.parseDouble(this.distanzaMinima.getText());
+   
+	   
+   
+    model.creaGrafo(distanza);
+    this.txtResult.appendText("creato un grafo con "+model.getVertex()+" vertici e "+model.getArchi()+" archi");
+    }catch (NumberFormatException nf) {this.txtResult.clear();
+    this.txtResult.appendText("inserisci un numero valido");
+    }}
 
     @FXML
     void doTestConnessione(ActionEvent event) {
+    	this.txtResult.clear();
+    	model.creaGrafo(0);
+    	int idPartenza=this.cmbBoxAeroportoPartenza.getValue().getId();
+    	int idArrivo=this.cmbBoxAeroportoArrivo.getValue().getId();
+    	if (model.testConnessione(idPartenza, idArrivo)) {
+    	this.txtResult.appendText("connessi");
+    	this.txtResult.appendText(model.percorso(idPartenza, idArrivo).toString());
+    	}
+    	else 
+    		this.txtResult.appendText("non connessi");
 
     }
 
@@ -68,10 +90,25 @@ public class FlightDelaysController {
         assert cmbBoxAeroportoArrivo != null : "fx:id=\"cmbBoxAeroportoArrivo\" was not injected: check your FXML file 'FlightDelays.fxml'.";
         assert btnAeroportiConnessi != null : "fx:id=\"btnAeroportiConnessi\" was not injected: check your FXML file 'FlightDelays.fxml'.";
 
-    }
+      
+     
+      
+        	
+        
+        }
+        
+    
     
     public void setModel(Model model) {
 		this.model = model;
+		
+	}
+
+	public void popolaCampi() {
+		List<Airport> tutti= model.getListaAeroporti();
+		this.cmbBoxAeroportoPartenza.getItems().addAll(tutti);
+		this.cmbBoxAeroportoArrivo.getItems().addAll(tutti);
+		
 	}
 }
 
